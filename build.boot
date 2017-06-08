@@ -20,8 +20,10 @@
                   [com.taoensso/timbre "4.10.0"]
                   [reagent "0.6.2"]
                   [re-frame "0.9.4"]
+                  [compojure "1.6.0"]
                   [bidi "2.1.1"]
                   [kibu/pushy "0.3.7"]
+                  [com.google.guava/guava "22.0"] ;; for datomic
                   [com.datomic/datomic-free "0.9.5404"]])
 
 (require '[adzerk.boot-cljs :refer [cljs]]
