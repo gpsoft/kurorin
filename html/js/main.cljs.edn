@@ -1,3 +1,4 @@
 {:require [kurorin.core]
+ :init-fns [kurorin.core/init]
  :compiler-options
  {:asset-path "js/main.out"}}
