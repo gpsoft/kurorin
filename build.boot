@@ -3,7 +3,7 @@
   :resource-paths #{"html"}
   :dependencies '[[org.clojure/clojure "1.9.0-alpha17"]
                   [org.clojure/clojurescript "1.9.562"]
-                  [org.clojure/tools.reader "1.0.0-RC1"]  ;; for reading edn
+                  [org.clojure/tools.reader "1.0.0"]  ;; for reading edn
                   [org.clojure/tools.nrepl "0.2.13"]
                   [adzerk/boot-cljs "2.0.0"]
                   [adzerk/boot-reload "0.5.1"]
@@ -23,18 +23,35 @@
                   [compojure "1.6.0"]
                   [bidi "2.1.1"]
                   [kibu/pushy "0.3.7"]
+                  [clj-http "3.6.1"]
+                  [cprop "0.1.10"]
                   [com.google.guava/guava "22.0"] ;; for datomic
                   [com.datomic/datomic-free "0.9.5404"]])
+
+;; cprop reads from this.
+;; or java -Dconf="/path/to/conf.edn" -jar kurorin.jar in production
+(System/setProperty "conf" "./app-config.edn")
 
 (require '[adzerk.boot-cljs :refer [cljs]]
          '[pandeiro.boot-http :refer [serve]]
          '[adzerk.boot-reload :refer [reload]]
-         '[adzerk.boot-cljs-repl :refer [cljs-repl start-repl]])
+         '[adzerk.boot-cljs-repl :refer [cljs-repl start-repl]]
+         '[taoensso.timbre :refer [set-level! merge-config!]]
+         '[taoensso.timbre.appenders.core :refer [spit-appender]])
+
+(deftask with-logfile
+  []
+  (set-level! :debug)
+  (merge-config!
+    {:appenders
+     {:spit (spit-appender {:fname "/tmp/kurorin.log"})}})
+  identity)
 
 (deftask dev
   "Start development."
   []
   (comp
+    (with-logfile)
     (serve :handler 'kurorin.core/app
            :resource-root "target"
            :reload true)
