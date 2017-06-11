@@ -2,34 +2,14 @@
   (:require [kurorin.utils :refer :all]
             [clojure.string :as string]
             [cprop.core :refer [load-config]]
-            [clj-http.client :as http]
-            [cheshire.core :refer [parse-string]]
             [net.cgrand.enlive-html :as html]
             [taoensso.timbre :refer [spy debug get-env]])
   (:import java.net.URL))
 
-(def cfg (load-config))
+(def ^{:private true} cfg (load-config))
 (def api-url-base "https://api.github.com")
 (def site-url-base "https://github.com")
 (def opt-base {:basic-auth (:github-credential cfg)})
-
-;; Simple fetch functions
-(defn- fetch
-  [url opt json?]
-  (let [body (:body (spy (http/get url opt)))]
-    (if json?
-      (parse-string body true)   ;; true: keywordised key
-      body)))
-(defn- fetch-json
-  [url opt]
-  (fetch url opt true))
-(defn- fetch-str
-  [url opt]
-  (fetch url opt false))
-(defn- fetch-bin
-  ([url] (fetch-bin url {}))
-  ([url opt]
-   (fetch url (assoc opt :as :byte-array) false)))
 
 
 ;; Using GitHub API
@@ -114,8 +94,8 @@
   "ドキュメント内の画像リストを得る。"
   [doc]
   (letfn [(info [img]
-            [(attr1 img :data-org-src)
-             (attr1 img :src)])]
+            {:from (attr1 img :data-org-src)
+             :to (attr1 img :src)})]
     (-> (html/html-snippet doc)
       (html/select [:img])
       (->> (map info)))))

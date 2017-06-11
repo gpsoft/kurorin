@@ -1,10 +1,30 @@
 (ns kurorin.core
-  (:require [bidi.bidi]
+  (:require [kurorin.github :refer :all]
+            [kurorin.publisher :refer :all]
+            [bidi.bidi]
             [bidi.ring :refer [make-handler files redirect]]
             [ring.util.response :refer [content-type file-response]]
             [ring.middleware.defaults :refer :all]
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
             [taoensso.timbre :refer [spy debug get-env]]))
+
+(declare fuga)
+(defn mk-book
+  [repos]
+  (let [repo-m {:full_name "Day8/re-frame"
+                :default_branch "master"
+                :login "Day8"
+                :name "re-frame"}
+        doc fuga #_(fetch-readme (:full_name repo-m))
+        doc (manipulate-content doc repo-m "img/hoge/")
+        imgs (link-images doc)]
+    {:filename "test"
+     :title "Test Book"
+     :author "GitHub users"
+     :chapters
+     [{:caption "chap1"
+       :content doc
+       :images imgs}]}))
 
 (def api-routes
   ["/api/" {"hoge" :hoge
@@ -30,4 +50,6 @@
 
 
 (comment
+  (publish (mk-book nil))
+
   )
