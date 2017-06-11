@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package unique-identifier="uid">
+    <metadata>
+        <dc-metadata xmlns:dc="http://purl.org/metadata/dublin_core"
+            xmlns:oebpackage="http://openebook.org/namespaces/oeb-package/1.0/">
+            <dc:Title id="title"></dc:Title>
+            <dc:Language>ja</dc:Language>
+            <dc:Creator id="author"></dc:Creator>
+            <dc:Description id="description"></dc:Description>
+            <dc:Date id="date"></dc:Date>
+        </dc-metadata>
+        <x-metadata>
+            <output encoding="utf-8" content-type="text/x-oeb1-document"></output>
+            <EmbeddedCover>jacket.jpg</EmbeddedCover>
+        </x-metadata>
+    </metadata>
+    <manifest>
+        <item id="index" media-type="text/x-oeb1-document" href="index.html"></item>
+        <item id="toc" media-type="application/x-dtbncx+xml" href="toc.ncx"></item>
+
+        <item class="item" id="item1" media-type="text/x-oeb1-document" href="#"></item>
+
+    </manifest>
+    <spine toc="toc">
+        <itemref idref="index" />
+        <itemref class="itemref" idref="item1" />
+    </spine>
+    <tours></tours>
+    <guide>
+        <reference type="toc" title="もくじ" href="index.html"></reference>
+        <reference type="start" title="本文" href="chap1.html"></reference>
+    </guide>
+</package>

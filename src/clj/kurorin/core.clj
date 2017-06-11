@@ -15,14 +15,16 @@
                 :default_branch "master"
                 :login "Day8"
                 :name "re-frame"}
-        doc fuga #_(fetch-readme (:full_name repo-m))
+        doc (fetch-readme (:full_name repo-m))
         doc (manipulate-content doc repo-m "img/hoge/")
         imgs (link-images doc)]
     {:filename "test"
      :title "Test Book"
      :author "GitHub users"
+     :description "Some great readmes from GitHub."
      :chapters
-     [{:caption "chap1"
+     [{:no 1
+       :caption "chap1"
        :content doc
        :images imgs}]}))
 

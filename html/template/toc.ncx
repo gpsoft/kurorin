@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN" "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">
+  <docTitle><text id="title"></text></docTitle>
+  <navMap>
+    <navPoint id="index" playOrder="0">
+      <navLabel><text>TOC</text></navLabel><content src="index.html"/>
+    </navPoint>
+    <navPoint class="item" id="item1" playOrder="1">
+        <navLabel><text></text></navLabel>
+        <content src=""/>
+    </navPoint>
+  </navMap>
+</ncx>

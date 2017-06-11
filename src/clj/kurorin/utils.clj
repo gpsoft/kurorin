@@ -1,13 +1,27 @@
 (ns kurorin.utils
   (:require [clj-http.client :as http]
             [cheshire.core :refer [parse-string]]
-            [clojure.java.io :refer [file output-stream]]))
+            [clojure.string :as string]
+            [clojure.java.io :refer [file output-stream make-parents]]))
 
+;; File IO
+(defn spit-on-dir
+  "Spit to a file on a dir."
+  [dirpath filename data]
+  (let [filepath (str dirpath filename)]
+    (make-parents filepath)
+    (spit filepath data)))
 (defn spit-bin
   "Spit binary data to a file."
   [filepath data]
+  (make-parents filepath)
   (with-open [out (output-stream (file filepath))]
     (.write out data)))
+(defn tmp-dir
+  "Temp directory (ends with /)"
+  []
+  (let [d (System/getProperty "java.io.tmpdir")]
+    (if (string/ends-with? d "/") d (str d "/"))))
 
 ;; Simple fetch functions
 (defn- fetch
