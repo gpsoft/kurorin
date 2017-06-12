@@ -7,6 +7,11 @@
 (def ^{:private true} cfg (load-config))
 
 ;; Templates for kindle
+(defn- chap-file
+  "チャプタ用のhtmlファイル名"
+  [chap-or-no]
+  (let [no (if (map? chap-or-no) (:no chap-or-no) chap-or-no)]
+    (str "chap" no ".html")))
 (html/deftemplate
   chapter "template/chapter.html"
   [content]
@@ -16,7 +21,7 @@
   [chapter]
   [:a] (html/do->
          (html/content (:caption chapter))
-         (html/set-attr :href (str "chap" (:no chapter) ".html"))))
+         (html/set-attr :href (chap-file chapter))))
 (html/deftemplate
   index "template/index.html"
   [{:keys [title author chapters]}]
@@ -30,7 +35,7 @@
                 (html/set-attr :id (if (zero? no) "index" (str "item" no)))
                 (html/set-attr :playOrder no))
   [:text] (html/content caption)
-  [:content] (html/set-attr :src (if (zero? no) "index.html" (str "chap" no ".html"))))
+  [:content] (html/set-attr :src (if (zero? no) "index.html" (chap-file no))))
 (html/deftemplate
   ncx "template/toc.ncx"
   [{:keys [title chapters]}]
@@ -47,7 +52,7 @@
                            [{no :no} chapters]
                            (html/do->
                              (html/set-attr :id (str "item" no))
-                             (html/set-attr :href (str "chap" no ".html"))))
+                             (html/set-attr :href (chap-file no))))
   [:spine :itemref.itemref] (html/clone-for
                               [{no :no} chapters]
                               (html/set-attr :idref (str "item" no)))
@@ -75,16 +80,23 @@
   (let [filepath (str dirpath to)]
     (spit-bin filepath (fetch-bin from))))
 
+(defn- render [strs] (apply str strs))
+
+(defn- publish-chapter!
+  [workdir {:keys [no caption content images]}]
+  (doall (map (partial download-image workdir) images))
+  (spit-on-dir workdir (chap-file no) (render (chapter content))))
+
 (defn publish!
   [book]
-  (let [workdir (str (tmp-dir) (:filename book) "/")
-        content (get-in book [:chapters 0 :content])
-        imgs (get-in book [:chapters 0 :images])]
-    #_(doall (map (partial download-image workdir) imgs))
-    #_(spit-on-dir workdir "index.html" (apply str (index book)))
-    (spit-on-dir workdir "toc.ncx" (apply str (ncx book)))
-    (spit-on-dir workdir (str (:filename book) ".opf") (apply str (opf book)))
-    #_(spit-on-dir workdir "chap1.html" (apply str (chapter content)))
+  (let [artifact (:filename book)
+        workdir (str (tmp-dir) artifact "/")]
+    (copy-resource "template/" "jacket.jpg" workdir)
+    (copy-resource "template/css/" "kindle.css" (str workdir "css/"))
+    (spit-on-dir workdir "index.html" (render (index book)))
+    (spit-on-dir workdir "toc.ncx" (render (ncx book)))
+    (spit-on-dir workdir (str artifact ".opf") (render (opf book)))
+    (doall (map (partial publish-chapter! workdir) (:chapters book)))
     workdir))
 
 (comment

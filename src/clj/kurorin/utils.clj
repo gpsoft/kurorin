@@ -2,7 +2,8 @@
   (:require [clj-http.client :as http]
             [cheshire.core :refer [parse-string]]
             [clojure.string :as string]
-            [clojure.java.io :refer [file output-stream make-parents]]))
+            [clojure.java.io :refer [file copy input-stream output-stream make-parents resource]]
+            [taoensso.timbre :refer [spy debug get-env]]))
 
 ;; File IO
 (defn spit-on-dir
@@ -22,6 +23,13 @@
   []
   (let [d (System/getProperty "java.io.tmpdir")]
     (if (string/ends-with? d "/") d (str d "/"))))
+(defn copy-resource
+  [srcdir src dstdir]
+  (let [s (str srcdir src)
+        d (str dstdir src)]
+    (make-parents d)
+    (with-open [in (input-stream (resource s))]
+      (copy in (file d)))))
 
 ;; Simple fetch functions
 (defn- fetch

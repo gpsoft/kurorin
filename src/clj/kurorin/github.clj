@@ -79,16 +79,29 @@
             ((html/set-attr :src new-src))
             ((html/set-attr :data-org-src org-src)))))))
 
+(defn- mkfn:snippet
+  [repo-m img-prefix disable-anchor? dom]
+  (html/defsnippet
+    readme dom [:article]
+    []
+    [:a.anchor] (html/do->
+                  (html/content "")
+                  html/unwrap)
+    [[:a (html/attr= :target "_blank") (html/has [:img])]] html/unwrap
+    [:a] (if disable-anchor?
+           (html/do-> html/unwrap (html/wrap :span {:class "anchor"}))
+           identity)
+    [:img] (mkfn:img-handler repo-m img-prefix)))
+
 (defn manipulate-content
   "ドキュメントを改ざん。
   - 見出しアンカーsvgを非表示
+  - 別タブに開くアンカーを無効化
   - imgタグのsrc変更とdata-org-src追加"
-  [doc repo-m img-prefix]
-  (let [dom (html/html-snippet doc)
-        _ (html/defsnippet snip dom [:article] []
-                           [:a.anchor :svg] (html/set-attr :style "display:none")
-                           [:img] (mkfn:img-handler repo-m img-prefix))]
-    (apply str (html/emit* (snip)))))
+  [doc repo-m img-prefix disable-anchor?]
+  (let [dom (html/html-snippet disable-anchor? doc)
+        _ (mkfn:snippet repo-m img-prefix disable-anchor? dom)]
+    (apply str (html/emit* (readme)))))
 
 (defn link-images
   "ドキュメント内の画像リストを得る。"

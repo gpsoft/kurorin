@@ -2,143 +2,147 @@
 
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,
 pre,code,kbd,samp,form,fieldset,input,textarea,p,blockquote,caption,th,td {
-  font-weight: normal;
-  font-style: normal;
+    font-weight: normal;
+    font-style: normal;
 }
 body,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,p,blockquote,caption,th,td {
-  line-height: 1.3;
-  margin: 0 0 0.8em 0;
-  padding: 0;
+    line-height: 1.3;
+    margin: 0 0 0.8em 0;
+    padding: 0;
 }
 
 body {
-/* width: 480px; */
-  font-size: 1.0em;
+    /* width: 480px; */
+    font-size: 1.0em;
 }
 
 h1 {
-  font-size: 1.6em;
-  font-weight: bold;
-  margin-bottom: 0.4em;
+    font-size: 1.6em;
+    font-weight: bold;
+    margin-bottom: 0.4em;
 }
 
 #booktitle {
-  font-size: 1.6em;
-  font-weight: bold;
-  margin-bottom: 0.2em;
+    font-size: 1.6em;
+    font-weight: bold;
+    margin-bottom: 0.2em;
 }
 
 #subtitle {
-  font-size: 0.9em;
-  font-weight: normal;
-  margin-top: -0em;
-  margin-bottom: 0.2em;
+    font-size: 0.9em;
+    font-weight: normal;
+    margin-top: -0em;
+    margin-bottom: 0.2em;
 }
 
 h2,h3 {
-  font-size: 1.2em;
-  font-weight: bold;
-  margin-top: 1.0em;
-  margin-bottom: 0.4em;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 1.0em;
+    margin-bottom: 0.4em;
 }
 
 h3 {
-  font-size: 0.9em;
+    font-size: 0.9em;
 }
 
 th {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 p.copyright {
-  margin-bottom: 2.0em;
-  font-size: 0.8em;
+    margin-bottom: 2.0em;
+    font-size: 0.8em;
 }
 
 p.toc {
-  margin-left: 0.8em;
-  margin-top: 0.4em;
-  margin-bottom: 0.2em;
+    margin-left: 0.8em;
+    margin-top: 0.4em;
+    margin-bottom: 0.2em;
 }
 
 p.tocpart {
-  margin-left: 0em;
-  margin-top: 1.8em;
-  margin-bottom: 0.2em;
+    margin-left: 0em;
+    margin-top: 1.8em;
+    margin-bottom: 0.2em;
 }
 
 p.tocsub {
-  margin-left: 2.0em;
-  margin-bottom: 0.2em;
+    margin-left: 2.0em;
+    margin-bottom: 0.2em;
 }
 
 p img {
-  display: block;
-  border: 1px #cccccc solid;
-  padding: 4px 4px 4px 4px;
-  margin: 0.2em auto;
+    display: block;
+    border: 1px #cccccc solid;
+    padding: 4px 4px 4px 4px;
+    margin: 0.2em auto;
 }
 
 p img[alt="partcaption"] {
-  display: block;
-  border: 0px #cccccc solid;
-  padding: 4px 4px 4px 4px;
-  margin: 0.2em auto;
+    display: block;
+    border: 0px #cccccc solid;
+    padding: 4px 4px 4px 4px;
+    margin: 0.2em auto;
 }
 
 .nomargin {
-  margin-bottom: 0em;
+    margin-bottom: 0em;
 }
 
 span.strong {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 table {
-  border: 1px solid #000000;
-  border-collapse: collapse;
-  border-spacing: 0;
-  margin: 0.2em auto 0.8em auto;
-  font-size: 0.9em;
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 0.2em auto 0.8em auto;
+    font-size: 0.9em;
 }
 
 th, td {
-  text-align: left;
+    text-align: left;
 }
 
 th, td {
-  border: 1px solid #000000;
-  padding-left: 2px;
-  padding-right: 2px;
+    border: 1px solid #000000;
+    padding-left: 2px;
+    padding-right: 2px;
 }
 
 ol,
 ul {
-  /* list-style: none; */
-  margin-left: 2em;
-  margin-bottom: 0.4em;
+    /* list-style: none; */
+    margin-left: 2em;
+    margin-bottom: 0.4em;
 }
 
 ul li {
-  /* padding-left: 1.2em; */
-  /* text-indent: -1.0em; */
+    /* padding-left: 1.2em; */
+    /* text-indent: -1.0em; */
 }
 
 li p {
-  margin-bottom: 0.0em;
+    margin-bottom: 0.0em;
 }
 
 code, pre, samp, kbd {
-  font-family: Courier,sans-serif,monospace;
-  font-size: 0.9em;
+    /* font-family: Courier,sans-serif,monospace; */
+    font-size: 0.9em;
 }
 
 pre code,
 pre.src {
-  display: block;
-  border: 1px solid #000000;
-  padding: 0.3em 0 0.3em 0.4em;
-  margin-left: 0.4em;
-  line-height: 1.2em;
+    display: block;
+    border: 1px solid #000000;
+    padding: 0.3em 0 0.3em 0.4em;
+    margin-left: 0.4em;
+    line-height: 1.2em;
 }
 
+span.anchor {
+    font-weight: bold;
+    font-size: 0.9em;
+}

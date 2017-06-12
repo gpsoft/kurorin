@@ -8,25 +8,25 @@
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
             [taoensso.timbre :refer [spy debug get-env]]))
 
-(declare fuga)
-(defn mk-book
-  [repos]
-  (let [repo-m {:full_name "Day8/re-frame"
-                :default_branch "master"
-                :login "Day8"
-                :name "re-frame"}
-        doc (fetch-readme (:full_name repo-m))
-        doc (manipulate-content doc repo-m "img/hoge/")
+(defn- mk-chapter
+  [ix repo-m]
+  (let [no (inc ix)
+        repo-name (:full_name repo-m)
+        doc (fetch-readme repo-name)
+        doc (manipulate-content doc repo-m (str "img/" no "/") true)
         imgs (link-images doc)]
-    {:filename "test"
+    {:no no
+     :caption repo-name
+     :content doc
+     :images imgs}))
+
+(defn- mk-book
+  [repos]
+  {:filename "test"
      :title "Test Book"
      :author "GitHub users"
      :description "Some great readmes from GitHub."
-     :chapters
-     [{:no 1
-       :caption "chap1"
-       :content doc
-       :images imgs}]}))
+     :chapters (map mk-chapter (range (count repos)) repos)})
 
 (def api-routes
   ["/api/" {"hoge" :hoge
@@ -52,5 +52,16 @@
 
 
 (comment
-  (publish! (mk-book nil))
+  (publish! (mk-book [{:full_name "gpsoft/tv-girl"
+                       :default_branch "master"
+                       :login "gpsoft"
+                       :name "tv-girl"}
+                      {:full_name "gpsoft/othe"
+                       :default_branch "master"
+                       :login "gpsoft"
+                       :name "othe"}
+                      #_{:full_name "Day8/re-frame"
+                       :default_branch "master"
+                       :login "Day8"
+                       :name "re-frame"}]))
   )
