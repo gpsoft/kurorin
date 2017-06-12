@@ -62,3 +62,12 @@
     (cljs)
     (target :dir #{"target"})))
 
+(deftask release
+  []
+  (comp
+    (cljs :optimizations :advanced
+          :compiler-options {:preloads nil})
+    (aot)
+    (uber)
+    (jar :file "kurorin.jar")
+    (target :dir #{"release"})))
