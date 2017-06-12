@@ -4,6 +4,7 @@
             [bidi.bidi]
             [bidi.ring :refer [make-handler files redirect]]
             [ring.util.response :refer [content-type file-response]]
+            [ring.util.json-response :refer [json-response]]
             [ring.middleware.defaults :refer :all]
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
             [taoensso.timbre :refer [spy debug get-env]]))
@@ -28,8 +29,13 @@
      :description "Some great readmes from GitHub."
      :chapters (map mk-chapter (range (count repos)) repos)})
 
+(defn- api-publish
+  [req]
+  (publish! (mk-book (:body req)))
+  (json-response {:result "OK"}))
+
 (def api-routes
-  ["/api/" {"hoge" :hoge
+  ["/api/" {"publish" api-publish
            "fuga" :fuga}])
 (def site-routes
   ["/" {"" (redirect "index.html")

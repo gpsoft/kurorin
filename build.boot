@@ -20,6 +20,7 @@
                   [com.taoensso/timbre "4.10.0"]
                   [reagent "0.6.2"]
                   [re-frame "0.9.4"]
+                  [re-frisk "0.4.5"]
                   [compojure "1.6.0"]
                   [bidi "2.1.1"]
                   [kibu/pushy "0.3.7"]
