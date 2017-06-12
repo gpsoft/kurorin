@@ -52,6 +52,5 @@
 
 
 (comment
-  (publish (mk-book nil))
-
+  (publish! (mk-book nil))
   )

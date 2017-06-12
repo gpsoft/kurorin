@@ -23,7 +23,7 @@
     </manifest>
     <spine toc="toc">
         <itemref idref="index" />
-        <itemref class="itemref" idref="item1" />
+        <itemref class="itemref" idref="" />
     </spine>
     <tours></tours>
     <guide>
