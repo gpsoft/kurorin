@@ -51,11 +51,12 @@
   [chapters {:keys [full_name default_branch owner] :as item}]
   (let [repo-name (:name item)
         login (:login owner)]
-    (when (not-any? (partial repo=? repo-name) chapters)
+    (if (not-any? (partial repo=? full_name) chapters)
       (conj chapters {:full_name full_name
                       :default_branch default_branch
                       :login login
-                      :name repo-name}))))
+                      :name repo-name})
+      chapters)))
 
 (defn- remove-chapter
   [chapters repo-name]
