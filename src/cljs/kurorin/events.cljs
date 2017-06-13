@@ -43,14 +43,28 @@
   (fn [db [_ result]]
     (assoc db :flash "Ajax fail" :on-ajax? false)))
 
+(defn- repo=?
+  [repo-name repo-m]
+  (= (:full_name repo-m) repo-name))
+
 (defn- append-chapter
   [chapters {:keys [full_name default_branch owner] :as item}]
   (let [repo-name (:name item)
         login (:login owner)]
-    (conj chapters {:full_name full_name
-                    :default_branch default_branch
-                    :login login
-                    :name repo-name})))
+    (when (not-any? (partial repo=? repo-name) chapters)
+      (conj chapters {:full_name full_name
+                      :default_branch default_branch
+                      :login login
+                      :name repo-name}))))
+
+(defn- remove-chapter
+  [chapters repo-name]
+  (filterv (comp not (partial repo=? repo-name)) chapters))
+
+(r/reg-event-db
+  :remove-chapter
+  (fn [db [_ repo-name]]
+    (update-in db [:chapters] remove-chapter repo-name)))
 
 (r/reg-event-db
   :append-chapter
