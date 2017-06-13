@@ -1,3 +1,7 @@
+ul {
+    padding-left: 0;
+}
+
 .pt8 {
     padding-top: 8px;
 }
@@ -34,3 +38,94 @@
     margin-right: 8px;
 }
 
+.table-row {
+    display: table;
+    width: 100%;
+}
+.table-cell {
+    display: table-cell;
+    vertical-align: middle;
+}
+label.on-ajax {
+    display: inline-block;
+    width: 32px;
+}
+
+
+
+
+@keyframes spinner {
+  to {transform: rotate(360deg);}
+}
+.spinner {
+    position: relative;
+    margin-left: 32px;
+}
+.spinner:before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  border-radius: 50%;
+  border-top: 2px solid #07d;
+  border-right: 2px solid transparent;
+  animation: spinner .6s linear infinite;
+}
+
+
+
+
+.footer {
+    margin-top: 32px;
+}
+
+li.repo-item {
+    list-style-type: none;
+    border: solid 1px #333;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+li.repo-item:hover {
+    background-color: #8ff;
+}
+.repo-info,
+.avatar {
+    padding: 4px;
+}
+.avatar {
+    width: 48px;
+    padding-right: 0px;
+    vertical-align: top;
+}
+.avatar img {
+    width: 100%;
+}
+.repo-name {
+    font-weight: bold;
+    font-size: 16px;
+}
+.repo-link {
+    margin-left: 4px;
+    color: #888;
+}
+.repo-description {
+    font-style: italic;
+}
+li.chapter {
+    list-style-type: none;
+    border: solid 1px #333;
+    margin-bottom: 8px;
+    padding: 4px;
+}
+.chapter-btns {
+    width: 24px;
+}
+.btn-del-chapter {
+    color: #000;
+    cursor: pointer;
+}

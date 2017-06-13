@@ -4,12 +4,18 @@
             [ajax.core :refer [GET POST]]
             [taoensso.timbre :refer-macros [spy debug get-env]]))
 
+(declare last-result)
 (r/reg-event-db
   :initialize-db
   (fn  [_ _]
     {:current-page :books-page
-     :on-ajax false
-     :chapters []}))
+     ; :search-result last-result   ;; for debugging
+     :chapters
+     []
+     #_[{:full_name "clojure/clojure", :default_branch "master", :login "clojure", :name "clojure"}
+      {:full_name "LightTable/Clojure", :default_branch "master", :login "LightTable", :name "Clojure"}
+      {:full_name "zcaudate/hara", :default_branch "master", :login "zcaudate", :name "hara"}]    ;; for debugging
+     :on-ajax? false}))
 
 (r/reg-event-db
   :move-to-page
@@ -18,23 +24,24 @@
 
 (r/reg-event-db
   :search-result
-  (fn [db [_ {:keys [total_count items]}]]
+  (fn [db [_ {:keys [total_count items] :as result}]]
+    (def last-result result)
     (let [num-items (min 30 total_count)]
       (assoc db
              :search-result {:num-items num-items
                              :total-num-items total_count
                              :items (take num-items items)}
-             :on-ajax false))))
+             :on-ajax? false))))
 
 (r/reg-event-db
   :publish-ok
   (fn [db [_]]
-    (assoc db :flash "Published!" :on-ajax false)))
+    (assoc db :flash "Published!" :on-ajax? false)))
 
 (r/reg-event-db
   :ajax-error
   (fn [db [_ result]]
-    (assoc db :flash "Ajax fail" :on-ajax false)))
+    (assoc db :flash "Ajax fail" :on-ajax? false)))
 
 (defn- append-chapter
   [chapters {:keys [full_name default_branch owner] :as item}]
@@ -53,7 +60,6 @@
 (r/reg-fx
   :http
   (fn [{:keys [url on-success on-fail] :as req-m}]
-    (debug req-m)
     (GET url {:format :json
               :response-format :json
               :keywords? true
@@ -77,7 +83,7 @@
     {:http {:url (str "https://api.github.com/search/repositories?q=" kw)
             :on-success [:search-result]
             :on-fail [:ajax-error]}
-     :db (assoc db :on-ajax true)}))
+     :db (assoc db :on-ajax? true)}))
 
 (r/reg-event-fx
   :publish
@@ -85,5 +91,5 @@
     {:publish-api {:chapters (:chapters db)
                    :on-success [:publish-ok]
                    :on-fail [:ajax-error]}
-     :db (assoc db :on-ajax true)}))
+     :db (assoc db :on-ajax? true)}))
 

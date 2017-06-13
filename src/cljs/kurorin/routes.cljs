@@ -12,7 +12,6 @@
   "Called when the url matches a route"
   [matched]
   (let [page (keyword (str (name (:handler matched)) "-page"))]
-    (debug page)
     (r/dispatch [:move-to-page page])))
 
 (defn app-routes

@@ -11,3 +11,8 @@
   :chapters
   (fn [db query-v]
     (:chapters db)))
+
+(r/reg-sub
+  :on-ajax?
+  (fn [db query-v]
+    (:on-ajax? db)))
