@@ -33,7 +33,8 @@
   (let [avatar (get-in repo-item [:owner :avatar_url] "")
         html-url (get-in repo-item [:html_url])]
     [:li.repo-item
-     {:on-click #(r/dispatch [:append-chapter repo-item])}
+     {:on-click #(when (not= (.-target.tagName %) "SPAN")
+                   (r/dispatch [:append-chapter repo-item]))}
      [:div.table-row
       [:div.table-cell.avatar
        (when-not (empty? avatar) [:img {:src avatar}])]
