@@ -1,4 +1,5 @@
 /target
+/release
 /.cljs_rhino_repl
 /out
 .nrepl-history

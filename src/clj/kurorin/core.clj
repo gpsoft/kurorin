@@ -2,12 +2,14 @@
   (:require [kurorin.github :refer :all]
             [kurorin.publisher :refer :all]
             [bidi.bidi]
-            [bidi.ring :refer [make-handler files redirect]]
-            [ring.util.response :refer [content-type file-response]]
+            [bidi.ring :refer [make-handler resources redirect]]
+            [ring.util.response :refer [content-type resource-response]]
             [ring.util.json-response :refer [json-response]]
             [ring.middleware.defaults :refer :all]
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
-            [taoensso.timbre :refer [spy debug get-env]]))
+            [ring.adapter.jetty :as jetty]
+            [taoensso.timbre :refer [spy debug get-env]])
+  (:gen-class))
 
 (defn- mk-chapter
   [ix repo-m]
@@ -38,12 +40,12 @@
   ["/api/" {"publish" api-publish
            "fuga" :fuga}])
 (def site-routes
-  ["/" {"" (redirect "index.html")
-        #{"books" "compose"} (fn [req] (-> (file-response "index.html" {:root "target"})
-                              (content-type "text/html")))
-        "index.html" (files {:dir "target"})
-        "js/" (files {:dir "target/js"})
-        "css/" (files {:dir "target/css"})}])
+  ["/" {"" (redirect "books")
+        #{"books" "compose"}
+        (fn [req] (-> (resource-response "index.html")
+                      (content-type "text/html")))
+        "js/" (resources {:prefix "js/"})
+        "css/" (resources {:prefix "css/"})}])
 (def app
   (let [api-h (-> (make-handler api-routes)
                   (wrap-json-body {:keywords? true})
@@ -56,6 +58,9 @@
         res
         (site-h req)))))
 
+
+(defn -main []
+  (jetty/run-jetty app {:port 3333}))
 
 (comment
   (publish! (mk-book [{:full_name "gpsoft/tv-girl"

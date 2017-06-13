@@ -12,10 +12,13 @@
                   [weasel "0.7.0"]
                   [pandeiro/boot-http "0.8.3"]
                   [prismatic/dommy "1.1.0"]
+                  [cheshire "5.7.1"]
+                  [ring/ring-core "1.6.1"]
+                  [ring/ring-jetty-adapter "1.6.1"]
                   [ring/ring-defaults "0.3.0"]
-                  [cljs-ajax "0.6.0"]
                   [ring-json-response "0.2.0"]
                   [ring/ring-json "0.4.0"]
+                  [cljs-ajax "0.6.0"]
                   [enlive "1.1.6"]
                   [com.taoensso/timbre "4.10.0"]
                   [reagent "0.6.2"]
@@ -39,6 +42,15 @@
          '[adzerk.boot-cljs-repl :refer [cljs-repl start-repl]]
          '[taoensso.timbre :refer [set-level! merge-config!]]
          '[taoensso.timbre.appenders.core :refer [spit-appender]])
+
+(task-options!
+  pom {:project 'kurorin
+       :version "0.1.0-SNAPSHOT"}
+  aot {:namespace '#{kurorin.core}}
+  jar {:main 'kurorin.core
+       :file "kurorin.jar"
+       :manifest {"Description" "Compose GitHub readmes and publish them in Kindle mobi file"
+                  "url" "http://localhost"}})
 
 (deftask with-logfile
   []
@@ -68,6 +80,7 @@
     (cljs :optimizations :advanced
           :compiler-options {:preloads nil})
     (aot)
+    (pom)
     (uber)
-    (jar :file "kurorin.jar")
+    (jar)
     (target :dir #{"release"})))
