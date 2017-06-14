@@ -12,6 +12,8 @@ Besides that, Kurorin actually is a practical tool; it collects any top-page (ak
 
 # TODO (or just an idea)
 
+- Search users (and mix with repo search)
+- Paging search result
 - Async publishing
 - Cache contents
 - Download mobi files
@@ -22,10 +24,15 @@ Besides that, Kurorin actually is a practical tool; it collects any top-page (ak
 - More config
 - Better UI
 - Better jacket
+- Search history
+- Undo/redo for composing
 
 # Configuration
 
-    app-config.edn
+    ;; app-config.edn
+    {:github-credential
+     ["gpsoft"                   ; user name
+      "aaa000bbb000ccc000"]}     ; password or personal access token
 
 # Developing
 
