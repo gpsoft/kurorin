@@ -13,11 +13,9 @@ Besides that, Kurorin actually is a practical tool; it collects any top-page (ak
 # TODO (or just an idea)
 
 - Async publishing
-- Call kindlegen on the server
 - Cache contents
 - Download mobi files
 - Save to/load from Datomic
-- Dockerfile to run the server
 - Go out of readmes
 - Go out of GitHub
 - Manage books
@@ -38,8 +36,30 @@ And browse `http://localhost:3000`.
 # Release
 
     $ boot release
-    $ java -Dconf="./app-config.edn" -jar release/kurorin.jar
+    $ java -Dconf=app-config.edn -jar release/kurorin.jar
+
 And browse `http://localhost:3333`.
+
+# Using Docker (and make command)
+
+Build a docker image named "kurorin" (which is based on alpine and kindlegen ready).
+
+    $ boot release
+    $ cd docker
+    $ make image          ...build an image for serving Kurorin
+
+And serve Kurorin.
+
+    $ make serve          ...run container and serve Kurorin
+                             forwarding port 3333
+                             volume sharing local dir ./docker/books
+                             *** You should change makefile to use other dir
+                             *** with which docker can share.
+
+For plumbing.
+
+    $ make shell          ...run container
+    $ make attach         ...attach to the running server
 
 # Screenshot
 

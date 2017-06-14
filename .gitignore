@@ -2,6 +2,7 @@
 /release
 /.cljs_rhino_repl
 /out
+/docker/books
 .nrepl-history
 .nrepl-port
 .sw*
