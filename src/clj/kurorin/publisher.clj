@@ -1,5 +1,6 @@
 (ns kurorin.publisher
   (:require [kurorin.utils :refer :all]
+            [clojure.java.shell :refer [sh]]
             [cprop.core :refer [load-config]]
             [net.cgrand.enlive-html :as html]
             [taoensso.timbre :refer [spy debug get-env]]))
@@ -90,13 +91,14 @@
 (defn publish!
   [book]
   (let [artifact (:filename book)
-        workdir (str (tmp-dir) artifact "/")]
+        workdir (str (tmp-dir) "kurorin/" artifact "/")]
     (copy-resource "template/" "jacket.jpg" workdir)
     (copy-resource "template/css/" "kindle.css" (str workdir "css/"))
     (spit-on-dir workdir "index.html" (render (index book)))
     (spit-on-dir workdir "toc.ncx" (render (ncx book)))
     (spit-on-dir workdir (str artifact ".opf") (render (opf book)))
     (doall (map (partial publish-chapter! workdir) (:chapters book)))
+    (sh "kindlegen" (str workdir artifact ".opf"))
     workdir))
 
 (comment

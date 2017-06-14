@@ -25,8 +25,8 @@
 
 (defn- mk-book
   [repos]
-  {:filename "test"
-     :title "Test Book"
+  {:filename "book1"
+     :title "Awesome readmes from GitHub"
      :author "GitHub users"
      :description "Some great readmes from GitHub."
      :chapters (map mk-chapter (range (count repos)) repos)})
