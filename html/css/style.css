@@ -122,6 +122,10 @@ li.chapter {
     margin-bottom: 8px;
     padding: 4px;
 }
+.chapter-info {
+    cursor: grab;
+    cursor: -webkit-grab;
+}
 .chapter-btns {
     width: 24px;
 }

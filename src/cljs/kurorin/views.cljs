@@ -3,6 +3,8 @@
             [kurorin.subs]
             [reagent.core :as reagent]
             [re-frame.core :as r]
+            [dommy.core :as dom]
+            [cljsjs.jquery-ui]
             [taoensso.timbre :refer-macros [spy debug get-env]]))
 
 (defn- search-box
@@ -56,9 +58,23 @@
              ^{:key item} [repo-result item])]
           [:p "No match."])))))
 
+(defn chap-to-attr
+  [{:keys [full_name default_branch login name]}]
+  {:data-full-name full_name
+   :data-default_branch default_branch
+   :data-login login
+   :data-name name})
+
+(defn chap-from-attr
+  [ele]
+  {:full_name (dom/attr ele "data-full-name")
+   :default_branch (dom/attr ele "data-default_branch")
+   :login (dom/attr ele "data-login")
+   :name (dom/attr ele "data-name")})
+
 (defn- chapter
-  [{:keys [full_name default_branch]}]
-  [:li.chapter
+  [{:keys [full_name default_branch] :as chap}]
+  [:li.chapter (chap-to-attr chap)
    [:div.table-row
     [:div.table-cell.chapter-info
      [:span.repo-name full_name]
@@ -70,13 +86,32 @@
      ]]])
 
 (defn- chapter-list
+  [chapters]
+  (reagent/create-class
+    {:component-did-mount
+     (fn [this]
+       (-> this
+           reagent/dom-node
+           js/$
+           (.sortable #js {:axis "y"
+                           :cursor "move"
+                           :scroll true
+                           :items "li"
+                           :handle ".chapter-info"
+                           :stop #(r/dispatch [:chapter-sorted])})))
+     :reagent-render
+     (fn [chapters]
+       (fn []
+         [:ul
+          (for [chap @chapters]
+            ^{:key chap} [chapter chap])]))}))
+
+(defn- book-info
   []
   (let [chapters (r/subscribe [:chapters])]
     (fn []
       (if (seq @chapters)
-        [:ul
-         (for [chap @chapters]
-           ^{:key chap} [chapter chap])]
+        [chapter-list chapters]
         [:p "Search and select repo to add chapters."]))))
 
 (defn- compose-panel
@@ -107,7 +142,7 @@
       [:div.col-sm-1]
       [:div.col-sm-6
        [:h4 "Chapters to publish"]
-       [chapter-list]
+       [book-info]
        [compose-panel]]]
      [:div.footer
       [:a.back-link {:href (rev-route :books)} "Back to the book list"]]]))

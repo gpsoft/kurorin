@@ -1,7 +1,8 @@
 (ns kurorin.events
-  (:require [kurorin.views]
+  (:require [kurorin.views :refer [chap-from-attr]]
             [re-frame.core :as r]
             [ajax.core :refer [GET POST]]
+            [dommy.core :as dom]
             [taoensso.timbre :refer-macros [spy debug get-env]]))
 
 (declare last-result)
@@ -42,6 +43,13 @@
   :ajax-error
   (fn [db [_ result]]
     (assoc db :flash "Ajax fail" :on-ajax? false)))
+
+(r/reg-event-db
+  :chapter-sorted
+  (fn [db _]
+    (let [chapters (->> (dom/sel :li.chapter)
+                        (mapv chap-from-attr))]
+      (assoc db :chapters chapters))))
 
 (defn- repo=?
   [repo-name repo-m]
