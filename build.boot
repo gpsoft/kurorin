@@ -30,6 +30,7 @@
                   [clj-http "3.6.1"]
                   [cprop "0.1.10"]
                   [cljsjs/jquery-ui "1.11.4-0"]
+                  [com.draines/postal "2.0.2"]
                   [com.google.guava/guava "22.0"] ;; for datomic
                   [com.datomic/datomic-free "0.9.5404"]])
 

@@ -3,6 +3,7 @@
             [clojure.java.shell :refer [sh]]
             [cprop.core :refer [load-config]]
             [net.cgrand.enlive-html :as html]
+            [postal.core :refer [send-message]]
             [taoensso.timbre :refer [spy debug get-env]]))
 
 (def ^{:private true} cfg (load-config))
@@ -101,5 +102,18 @@
     (sh "kindlegen" (str workdir artifact ".opf"))
     workdir))
 
+(defn send-to-kindle
+  [book]
+  (let [artifact (:filename book)
+        workdir (str (tmp-dir) "kurorin/" artifact "/")
+        filename (str artifact ".mobi")]
+    (send-message (:smtp-server cfg)
+                  (assoc (:email-msg cfg)
+                         :subject ""
+                         :body [{:type :attachment
+                                 :content (java.io.File. (str workdir filename))
+                                 :content-type "Content-Type: application/x-mobipocket-ebook"}]))))
+
 (comment
+  (send-to-kindle {:filename "book1"})
   )

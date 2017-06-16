@@ -1,2 +1,17 @@
-{:github-credential ["user-name"
-                     "password-or-personal-access-token"]}
+{
+ ;; for GitHub API
+ :github-credential ["user-name"
+                     "password-or-personal-access-token"]
+
+ ;; email settings for send-to-kindle
+ ;; these are args for the postal.core/send-message function
+ ;; https://github.com/drewr/postal
+ :smtp-server {:host "smtp-server-name"
+               :user "email-account"
+               :pass "email-password"
+               :debug false
+               :tls true
+               :port 587}
+ :email-msg {:from "your-email-address"
+             :to ["your-kindle-address"]}
+ }
