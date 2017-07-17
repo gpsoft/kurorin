@@ -1,7 +1,10 @@
+/* reset */
 ul {
     padding-left: 0;
+    margin-bottom: 0;
 }
 
+/* handy */
 .pt8 {
     padding-top: 8px;
 }
@@ -46,14 +49,9 @@ ul {
     display: table-cell;
     vertical-align: middle;
 }
-label.on-ajax {
-    display: inline-block;
-    width: 32px;
-}
 
 
-
-
+/* spinner */
 @keyframes spinner {
   to {transform: rotate(360deg);}
 }
@@ -78,20 +76,42 @@ label.on-ajax {
 }
 
 
+/* listing */
+.lis-wrapper {
+    max-height: 400px;
+    overflow-y: scroll;
+    border: solid 2px #000000;
+    padding: 2px;
+    padding-bottom: 0;
+}
+.lis-wrapper .lis {
+    margin-bottom: 2px;
+}
+.lis-wrapper .lis > li {
+    list-style-type: none;
+    margin-bottom: 4px;
+    padding: 4px;
+}
+.lis-wrapper .lis > li:last-child {
+    margin-bottom: 0px;
+}
+
 
 
 .footer {
     margin-top: 32px;
 }
 
-li.repo-item {
-    list-style-type: none;
-    border: solid 1px #333;
-    margin-bottom: 8px;
-    cursor: pointer;
+.lis-wrapper.search-result-wrapper {
+    border-color: #3782ba;
 }
-li.repo-item:hover {
-    background-color: #8ff;
+.lis-wrapper.search-result-wrapper .lis > li {
+    background-color: #a4ceed;
+    padding: 0;
+}
+.lis-wrapper.search-result-wrapper .lis > li:hover {
+    background-color: #c6e6ff;
+    cursor: cell;
 }
 .repo-info,
 .avatar {
@@ -116,11 +136,16 @@ li.repo-item:hover {
 .repo-description {
     font-style: italic;
 }
-li.chapter {
-    list-style-type: none;
-    border: solid 1px #333;
-    margin-bottom: 8px;
-    padding: 4px;
+
+.lis-wrapper.chapter-list-wrapper {
+    border-color: #bc8339;
+}
+.lis-wrapper.chapter-list-wrapper .lis > li {
+    background-color: #fcc987;
+}
+.chapter-list > li {
+    height: 44px;
+    line-height: 36px;
 }
 .chapter-info {
     cursor: grab;
@@ -133,3 +158,13 @@ li.chapter {
     color: #000;
     cursor: pointer;
 }
+
+.book-btns {
+    margin-top: 16px;
+}
+
+label.on-ajax {
+    display: inline-block;
+    width: 32px;
+}
+

@@ -14,7 +14,7 @@
         search #(let [v (-> @val str clojure.string/trim)]
                   (when-not (empty? v) (r/dispatch [:search-github v])))]
     (fn []
-      [:div.mb16
+      [:div.mt16.mb16
        [:div.form-inline.text-center
         [:div.form-group
          [:div.input-group
@@ -23,12 +23,19 @@
           [:input.form-control {:id "kw"
                                 :type "text"
                                 :placeholder "Keyword for users or repos"
+                                :size 40
                                 :value @val
                                 :on-change #(reset! val (-> % .-target .-value))
                                 :on-key-down #(when (= (.-which %) 13) (search))}]]]
         [:button.btn.btn-primary.ml8 {:on-click #(search)} "Search"]
         [:label.on-ajax
          (when @ajax? [:span.spinner])]]])))
+
+(defn- str-crop
+  [s l]
+  (let [s (or s "")
+        l (min l (count s))]
+    (subs s 0 l)))
 
 (defn- repo-result
   [repo-item]
@@ -45,7 +52,7 @@
         (:full_name repo-item)
         [:a.repo-link {:href html-url :target "_blank"}
          [:span.glyphicon.glyphicon-new-window]]]
-       [:div.repo-description (:description repo-item)]]]]))
+       [:div.repo-description (str-crop (:description repo-item) 100)]]]]))
 
 (defn- search-result
   []
@@ -53,9 +60,10 @@
     (fn []
       (let [items (:items @result)]
         (if (seq items)
-          [:ul
-           (for [item items]
-             ^{:key item} [repo-result item])]
+          [:div.lis-wrapper.search-result-wrapper
+           [:ul.lis.search-result
+            (for [item items]
+              ^{:key item} [repo-result item])]]
           [:p "No match."])))))
 
 (defn chap-to-attr
@@ -102,9 +110,10 @@
      :reagent-render
      (fn [chapters]
        (fn []
-         [:ul
-          (for [chap @chapters]
-            ^{:key chap} [chapter chap])]))}))
+         [:div.lis-wrapper.chapter-list-wrapper
+          [:ul.lis.chapter-list
+           (for [chap @chapters]
+             ^{:key chap} [chapter chap])]]))}))
 
 (defn- book-info
   []
@@ -119,7 +128,8 @@
   (let [chapters (r/subscribe [:chapters])]
     (fn []
       (when (seq @chapters)
-        [:button.btn.btn-success {:on-click #(r/dispatch [:publish])} "Publish"]))))
+        [:div.book-btns
+         [:button.btn.btn-success {:on-click #(r/dispatch [:publish])} "Publish"]]))))
 
 (defn- books-page
   []
