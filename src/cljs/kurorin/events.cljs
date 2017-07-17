@@ -10,7 +10,7 @@
   :initialize-db
   (fn  [_ _]
     {:current-page :books-page
-     ; :search-result last-result   ;; for debugging
+     :search-result last-result   ;; for debugging
      :chapters
      []
      #_[{:full_name "clojure/clojure", :default_branch "master", :login "clojure", :name "clojure"}
@@ -33,6 +33,19 @@
                              :total-num-items total_count
                              :items (take num-items items)}
              :on-ajax? false))))
+
+(r/reg-event-db
+  :dig-result
+  (fn [db [_ json]]
+    (let [docs (->> json
+                    (filter #(= (:type %) "dir"))
+                    (filter #(#{"docs" "doc"} (:path %)))
+                    (map :url))]
+      (debug docs)
+      (-> db
+          (update-in [:search-result :items] #(conj docs %))
+          (assoc :on-ajax? false))
+      )))
 
 (r/reg-event-db
   :publish-ok
@@ -105,6 +118,14 @@
   (fn [{:keys [db]} [_ kw]]
     {:http {:url (str "https://api.github.com/search/repositories?q=" kw)
             :on-success [:search-result]
+            :on-fail [:ajax-error]}
+     :db (assoc db :on-ajax? true)}))
+
+(r/reg-event-fx
+  :dig-repo
+  (fn [{:keys [db]} [_ {:keys [full_name]}]]
+    {:http {:url (str "https://api.github.com/repos/" full_name "/contents/")
+            :on-success [:dig-result]
             :on-fail [:ajax-error]}
      :db (assoc db :on-ajax? true)}))
 

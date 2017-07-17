@@ -51,6 +51,8 @@
        [:div.repo-name
         (:full_name repo-item)
         [:a.repo-link {:href html-url :target "_blank"}
+         [:span.glyphicon.glyphicon-new-window]]
+        [:a.dig-link {:on-click #(r/dispatch [:dig-repo repo-item])}
          [:span.glyphicon.glyphicon-new-window]]]
        [:div.repo-description (str-crop (:description repo-item) 100)]]]]))
 

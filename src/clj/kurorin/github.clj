@@ -3,6 +3,7 @@
             [clojure.string :as string]
             [cprop.core :refer [load-config]]
             [net.cgrand.enlive-html :as html]
+            [me.raynes.fs :as fs]
             [taoensso.timbre :refer [spy debug get-env]])
   (:import java.net.URL))
 
@@ -32,6 +33,21 @@
     (fetch-str ep (assoc opt-base
                      :headers
                      {:Accept "application/vnd.github.v3.html+json"}))))
+
+(defn list-dir-contents
+  "List contents of a directory."
+  [repo-name dir-path]
+  (let [ep (str api-url-base "/repos/" repo-name "/contents" dir-path)]
+    (fetch-json ep
+                opt-base)))
+
+(defn fetch-content
+  "Fetch a file readme of the repo. Result is in partial HTML string."
+  [repo-name file-path]
+  (let [ep (str api-url-base "/repos/" repo-name "/contents" file-path)]
+    (fetch-str ep (assoc opt-base
+                         :headers
+                         {:Accept "application/vnd.github.v3.html+json"}))))
 
 
 ;; Manipulate Content and collect info of images
@@ -64,6 +80,15 @@
   (let [path (.getPath (URL. url-str))
         ext (last (string/split path #"\."))]
     (if (> (count ext) 4) "" (str "." ext))))
+
+(defn- markup?
+  [content]
+  (let [exts #{".md" ".markdown"
+               ".asciidoc" ".asc"
+               ".org" ".rdoc"
+               ".textile"}]
+    (and (= (:type content) "file")
+         (exts (fs/extension (:path content))))))
 
 (defn- mkfn:img-handler
   "imgタグを改ざんするハンドラを生成。"
@@ -116,6 +141,12 @@
 (comment
   (search-user "gpsoft")
   (search-repo "neko")
+  (fetch-readme "gpsoft/kurorin")
+  (->>
+    (list-dir-contents "exercism/clojure" "/docs")
+    (filter markup?)
+    (map :path))
+  (fetch-content "Day8/re-frame" "/docs/Coeffects.md")
   (let [repo-m {:full_name "Day8/re-frame"
                 :default_branch "master"
                 :login "Day8"

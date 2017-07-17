@@ -28,4 +28,4 @@
   (r/dispatch-sync [:initialize-db])
   (mount-root))
 
-; (init)
+(init)
