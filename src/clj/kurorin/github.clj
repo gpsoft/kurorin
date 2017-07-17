@@ -49,6 +49,20 @@
                          :headers
                          {:Accept "application/vnd.github.v3.html+json"}))))
 
+(defn fetch-doc
+  [url]
+  (let [docs (fetch-json url opt-base)
+        docs (filter markup? docs)
+        urls (map :url docs)]
+    (if (seq urls)
+      (apply str (for [url urls]
+             (fetch-str url (assoc opt-base
+                                   :headers
+                                   {:Accept "application/vnd.github.v3.html+json"}))))
+      "<div>No Docs</div>")
+    )
+  )
+
 
 ;; Manipulate Content and collect info of images
 (defn- attr1
@@ -139,6 +153,7 @@
       (->> (map info)))))
 
 (comment
+  (taoensso.timbre/may-log? :debug)
   (search-user "gpsoft")
   (search-repo "neko")
   (fetch-readme "gpsoft/kurorin")

@@ -98,13 +98,15 @@
       chapters)))
 
 (defn- remove-chapter
-  [chapters repo-name]
-  (filterv (comp not (partial repo=? repo-name)) chapters))
+  [chapters chap]
+  (let [item-type (:type chap)
+        repo-name (:full_name chap)]
+    (filterv (comp not (partial repo=? item-type repo-name)) chapters)))
 
 (r/reg-event-db
   :remove-chapter
-  (fn [db [_ repo-name]]
-    (update-in db [:chapters] remove-chapter repo-name)))
+  (fn [db [_ chap]]
+    (update-in db [:chapters] remove-chapter chap)))
 
 (r/reg-event-db
   :append-chapter

@@ -14,8 +14,12 @@
 (defn- mk-chapter
   [ix repo-m]
   (let [no (inc ix)
+        item-type (:type repo-m)
         repo-name (:full_name repo-m)
-        doc (fetch-readme repo-name)
+        doc (if (= item-type "doc")
+              (fetch-doc (:url repo-m))
+              (fetch-readme repo-name))
+        _ (debug doc)
         doc (manipulate-content doc repo-m (str "img/" no "/") true)
         imgs (link-images doc)]
     {:no no

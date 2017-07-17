@@ -103,7 +103,7 @@
      [:span (str " (" default_branch ")")]]
     [:div.table-cell.chapter-btns
      [:a.btn-del-chapter
-      {:on-click #(r/dispatch [:remove-chapter full_name])}
+      {:on-click #(r/dispatch [:remove-chapter chap])}
       [:span.glyphicon.glyphicon-remove]]
      ]]])
 
