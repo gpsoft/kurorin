@@ -56,6 +56,16 @@
          [:span.glyphicon.glyphicon-new-window]]]
        [:div.repo-description (str-crop (:description repo-item) 100)]]]]))
 
+(defn- doc-result
+  [doc-item]
+  [:li.repo-item
+   {:on-click #(when (not= (.-target.tagName %) "SPAN")
+                 (r/dispatch [:append-chapter doc-item]))}
+   [:div.table-row
+    [:div.table-cell.avatar]
+    [:div.table-cell.repo-info
+     [:div.repo-name "docs"]]]])
+
 (defn- search-result
   []
   (let [result (r/subscribe [:search-result])]
@@ -65,7 +75,9 @@
           [:div.lis-wrapper.search-result-wrapper
            [:ul.lis.search-result
             (for [item items]
-              ^{:key item} [repo-result item])]]
+              (if (= (:type item) :doc)
+                ^{:key item} [doc-result item]
+                ^{:key item} [repo-result item]))]]
           [:p "No match."])))))
 
 (defn chap-to-attr

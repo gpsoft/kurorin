@@ -32,6 +32,7 @@
                   [cljsjs/jquery-ui "1.11.4-0"]
                   [com.draines/postal "2.0.2"]
                   [me.raynes/fs "1.4.6"]
+                  [com.rpl/specter "1.0.2"]
                   [com.google.guava/guava "22.0"] ;; for datomic
                   [com.datomic/datomic-free "0.9.5404"]])
 

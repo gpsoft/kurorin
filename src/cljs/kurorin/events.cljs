@@ -3,6 +3,7 @@
             [re-frame.core :as r]
             [ajax.core :refer [GET POST]]
             [dommy.core :as dom]
+            [com.rpl.specter :as specter]
             [taoensso.timbre :refer-macros [spy debug get-env]]))
 
 (declare last-result)
@@ -34,16 +35,29 @@
                              :items (take num-items items)}
              :on-ajax? false))))
 
+(defn- append-docs-after
+  [repo-item docs items]
+  (let [full_name (:full_name repo-item)
+        pred (fn [repo] (= (:full_name repo) full_name))
+        [l r] (split-with pred items)]
+    (concat l docs r)))
+
+(defn- ->repo
+  [repo-item doc]
+  (assoc repo-item
+         :type :doc
+         :url doc))
+
 (r/reg-event-db
   :dig-result
-  (fn [db [_ json]]
+  (fn [db [_ repo-item json]]
     (let [docs (->> json
                     (filter #(= (:type %) "dir"))
                     (filter #(#{"docs" "doc"} (:path %)))
                     (map :url))]
       (debug docs)
       (-> db
-          (update-in [:search-result :items] #(conj docs %))
+          (update-in [:search-result :items] #(append-docs-after repo-item (map (partial ->repo repo-item) docs) %))
           (assoc :on-ajax? false))
       )))
 
@@ -65,18 +79,22 @@
       (assoc db :chapters chapters))))
 
 (defn- repo=?
-  [repo-name repo-m]
-  (= (:full_name repo-m) repo-name))
+  [item-type repo-name repo-m]
+  (and (= (:full_name repo-m) repo-name)
+       (= (:type repo-m) item-type)))
 
 (defn- append-chapter
-  [chapters {:keys [full_name default_branch owner] :as item}]
+  [chapters {:keys [full_name default_branch owner url] :as item}]
   (let [repo-name (:name item)
+        item-type (:type item)
         login (:login owner)]
-    (if (not-any? (partial repo=? full_name) chapters)
-      (conj chapters {:full_name full_name
+    (if (not-any? (partial repo=? item-type full_name) chapters)
+      (conj chapters {:type (or item-type :repo)
+                      :full_name full_name
                       :default_branch default_branch
                       :login login
-                      :name repo-name})
+                      :name repo-name
+                      :url url})
       chapters)))
 
 (defn- remove-chapter
@@ -123,9 +141,9 @@
 
 (r/reg-event-fx
   :dig-repo
-  (fn [{:keys [db]} [_ {:keys [full_name]}]]
+  (fn [{:keys [db]} [_ {:keys [full_name] :as repo-item}]]
     {:http {:url (str "https://api.github.com/repos/" full_name "/contents/")
-            :on-success [:dig-result]
+            :on-success [:dig-result repo-item]
             :on-fail [:ajax-error]}
      :db (assoc db :on-ajax? true)}))
 
@@ -137,3 +155,14 @@
                    :on-fail [:ajax-error]}
      :db (assoc db :on-ajax? true)}))
 
+(comment
+  (let [db {:items [{:type 1}
+                    {:type 3}]}
+        pred (fn [repo] (= (:type repo) 1))]
+    #_(specter/setval [:items (specter/srange 1 1)] [{:type 2}] db)
+    (specter/setval [:items (specter/srange-dynamic (fn [d] (first (keep-indexed #(when (pred %2) (inc %1)) d)))
+                                                    (specter/end-fn [d ix] ix))] [{:type 2}] db)
+    )
+  (let [[left right] (split-with #(= (:type %) 1) [{:type 1} {:type 3}])]
+    (concat left [{:type 2}] right))
+  )
