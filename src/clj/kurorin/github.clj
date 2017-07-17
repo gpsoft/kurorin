@@ -49,6 +49,15 @@
                          :headers
                          {:Accept "application/vnd.github.v3.html+json"}))))
 
+(defn- markup?
+  [content]
+  (let [exts #{".md" ".markdown"
+               ".asciidoc" ".asc"
+               ".org" ".rdoc"
+               ".textile"}]
+    (and (= (:type content) "file")
+         (exts (fs/extension (:path content))))))
+
 (defn fetch-doc
   [url]
   (let [docs (fetch-json url opt-base)
@@ -94,15 +103,6 @@
   (let [path (.getPath (URL. url-str))
         ext (last (string/split path #"\."))]
     (if (> (count ext) 4) "" (str "." ext))))
-
-(defn- markup?
-  [content]
-  (let [exts #{".md" ".markdown"
-               ".asciidoc" ".asc"
-               ".org" ".rdoc"
-               ".textile"}]
-    (and (= (:type content) "file")
-         (exts (fs/extension (:path content))))))
 
 (defn- mkfn:img-handler
   "imgタグを改ざんするハンドラを生成。"
